@@ -1,0 +1,475 @@
+EU2020: Köyhyyden ja sosiaalisen syrjäytymisen vähentämistavoitteet
+==============
+css: slides.css
+transition: fade
+transition-speed: fast
+
+Kelan tutkimus 50 vuotta: Kestävä hyvinvointi -seminaaripäivä 5.6.2014</br>
+[Sessio 3: Sosiaalisesti kestävä hyvinvointivaltio? Suomalaisten elinolot ja tulonjako](http://www.kela.fi/kestava-hyvinvointi#Sessio3)
+
+
+<a href="http://markuskainu.fi">Markus Kainu</a></br>
+*yliopisto-opettaja* </br>
+[Sosiaalitieteden laitos, Turun yliopisto](https://www.utu.fi/fi/yksikot/soc/yksikot/sosiaalitieteet/Sivut/home.aspx) </br>
+
+<div class="github-fork-ribbon-wrapper right">
+<div class="github-fork-ribbon">
+<a href="https://github.com/muuankarski/" style="color:white;">Fork me on GitHub</a>
+</div>
+</div>
+
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(fig.width = 15, fig.height = 10, message = FALSE, warning = FALSE)
+```
+
+Sisältö
+===========================================================
+
+1. EU2020 köyhyystavoite
+    1. Köyhyyden ja sosiaalisen syrjäytymisen vähentämisen **tavoitteet**
+    2. Köyhyyden ja sosiaalisen syrjäytymisen vähentämisen **indikaattorit**
+2. 
+
+
+
+
+==========================================
+type: subsection
+
+<h1>poistetaan köyhyys- tai syrjäytymisvaara vähintään 20 miljoonalta ihmiseltä.</h1>
+
+
+=======================================
+
+## Suhteellinen tuloköyhyys
+
+Ne henkilöt, joiden kotitalouden
+käytettävissä olevat tulot kulutusyksikköä
+kohti ovat pienemmät kuin 60 prosenttia
+maan vastaavasta mediaanitulosta
+
+## Aineellinen puute
+
+Kotitaloudella on puutteita aineellisessa elintasossa, jos vähintään neljä ehtoa yhdeksästä täyttyy:
+
+1. rästit asuntolainan, vuokran, muiden asumismenojen tai osamaksujen tai muiden lainojen takaisinmaksussa
+2. ei mahdollisuutta viikon lomaan kodin ulkopuolella
+3. ei mahdollisuutta proteiinipitoiseen ruokaan joka toinen päivä
+4. ei varaa hoitaa odottamattomia rahoituskuluja edellisvuoden köyhyysrajaa vastaavaa määrää
+5. ei varaa (matka)puhelimeen
+6. ei varaa väritelevisioon
+7. ei varaa pesukoneeseen
+8. ei varaa autoon
+9. ei varaa lämmittää asuntoaan riittävästi
+
+## Vajaatyöllisyys
+
+Kotitalouden työikäisten eikuisten työllisinä oloaikana vuoden aikana kuvaa työssäkäynnin intensiteettiä. Mittari kuvaa sitä, kuinka suuri osa väestöstä elää niissä kotitalouksissa, joissa työllisenä oloaika jää vähäisemmäksi kuin 20 prosenttia mahdollisesta työhön käytettävissä olevasta ajasta.
+
+
+=========================================
+
+![](figure/eu2020venn1_fi.png)
+
+
+
+===========================================
+
+![](figure/eu2020venn2_fi.png)
+
+
+===========================================
+
+![](figure/eu2020venn3_fi.png)
+
+
+===========================================
+
+![](figure/eu2020venn4_fi.png)
+
+
+===========================================
+type: subsection
+
+<h1>Suomi kansainvälisessä vertailussa</h1>
+
+```{r dataa_graafeihin, cache=TRUE, echo=FALSE, results='hide'}
+### Jakaumadata
+
+#load("/media/baikal/Asiakirjat/data/eu_silc/2010/cross_rev1/hh_merge.Rdata")
+load("~/data/eu_silc/2011/cross_rev1/hh_merge.RData")
+
+df.boxplot <- subset(hh_merge, select=c("HH_ID","DB020","HX090"))
+
+library(RCurl)
+GHurl <- getURL("https://raw.githubusercontent.com/muuankarski/data/master/europe/eu_cntry.csv")
+dat <- read.csv(text = GHurl)
+
+df.boxplot <- merge(df.boxplot,dat,by.x="DB020",by.y="NUTS_ID")
+rm(hh_merge)
+
+
+#########################
+# consumer prices
+
+library(SmarterPoland)
+searchresults <- grepEurostatTOC("Consumer Prices")
+df <- getEurostatRCV(kod = "prc_hicp_aind")
+
+df11 <- subset(df, time %in% "2011")
+df.index <- subset(df, infotype %in% "AVX")
+
+df.index$time <- factor(df.index$time)
+df.index$time.num <- as.numeric(levels(df.index$time))[df.index$time]
+
+df.index.11 <- subset(df.index, time.num == 2011)
+
+df.index.11.all <- subset(df.index.11, coicop == "CP00")
+
+price.index <- df.index.11.all[,c(3,5,6)]
+names(price.index) <- c("geo.time","price.index","year")
+
+
+#########################
+
+df.boxplot <- merge(df.boxplot,price.index, by.x="DB020", by.y="geo.time", all.x=TRUE)
+# hintavakioidut tulot 
+df.boxplot$HX090p <- df.boxplot$HX090/df.boxplot$price.index*100
+
+######################################3
+
+library(stringr)
+# Load the data
+
+
+eu2020_poverty <- function(var){
+  temp <- tempfile()
+  download.file(paste0("http://epp.eurostat.ec.europa.eu/NavTree_prod/everybody/BulkDownloadListing?file=data/",var,".tsv.gz"), 
+    temp)
+  # some tweaking due to dual separator used (comma AND tab)
+  txt <- readLines(con = temp)
+  txt <- gsub(",", "\t", txt)
+  df <- read.table(textConnection(txt), header = TRUE, sep = "\t")
+  ##
+  # Split in absolute and relative datasets
+  df.abso <- subset(df, unit == "1000PERS")
+  df.rela <- subset(df, unit != "1000PERS")
+  # Convert both dataset into long format for plotting
+  library(reshape2)
+
+  df.abso.l <- melt(data = df.abso, 
+                  id.vars = "geo.time", 
+                  measure.vars = c("X2004", "X2005",
+                                   "X2006", "X2007", "X2008",
+                                   "X2009", "X2010", "X2011","X2012","X2013"))
+
+  df.rela.l <- melt(data = df.rela, 
+                  id.vars = "geo.time", 
+                  measure.vars = c("X2004", "X2005", 
+                                   "X2006", "X2007", "X2008",
+                                   "X2009", "X2010", "X2011","X2012","X2013"))
+
+  # tweak both variable and value column into numeric vectors variable
+  # column
+  library(stringr)
+  df.abso.l$variable <- str_replace_all(df.abso.l$variable, "X", "")
+  df.abso.l$variable <- factor(df.abso.l$variable)
+  df.abso.l$variable <- as.numeric(levels(df.abso.l$variable))[df.abso.l$variable]
+  #
+  df.rela.l$variable <- str_replace_all(df.rela.l$variable, "X", "")
+  df.rela.l$variable <- factor(df.rela.l$variable)
+  df.rela.l$variable <- as.numeric(levels(df.rela.l$variable))[df.rela.l$variable]
+  ## value column
+  df.abso.l$value <- as.character(df.abso.l$value)
+    
+  df.abso.l$value <- str_replace_all(df.abso.l$value, pattern=" [a-z]",
+                                   replacement="")
+  df.abso.l$value <- str_trim(df.abso.l$value, side = "right")
+  df.abso.l$value[df.abso.l$value == ':'] <- NA
+
+  df.abso.l$value <- factor(df.abso.l$value)
+  df.abso.l$value <- as.numeric(levels(df.abso.l$value))[df.abso.l$value]
+  #
+  df.rela.l$value <- factor(df.rela.l$value)
+  df.rela.l$value <- as.numeric(levels(df.rela.l$value))[df.rela.l$value]
+
+
+  df.abso.l <- subset(df.abso.l, geo.time != "EU27")
+  df.abso.l <- subset(df.abso.l, geo.time != "TR")
+  # suominimet
+  library(RCurl)
+  GHurl <- getURL("https://raw.githubusercontent.com/muuankarski/data/master/europe/eu_cntry.csv")
+  dat <- read.csv(text = GHurl)
+  df.abso.l <- merge(df.abso.l,dat,by.x="geo.time",by.y="NUTS_ID")
+  df.rela.l <- merge(df.rela.l,dat,by.x="geo.time",by.y="NUTS_ID")
+  #
+  df.abso.l$varname <- paste0(var,"abso")
+  df.rela.l$varname <- paste0(var,"rela")
+  #
+  assign(paste0(var,"abso"), df.abso.l, envir = globalenv())
+  assign(paste0(var,"rela"), df.rela.l, envir = globalenv())
+  
+  }
+
+eu2020_poverty("t2020_51") # work intensity
+eu2020_poverty("t2020_52") # income poverty
+eu2020_poverty("t2020_53") # material deprivation
+eu2020_poverty("t2020_50") # overall
+
+```
+
+
+
+```{r_mapping, echo=FALSE, results='hide'}
+dat50 <- t2020_50rela[t2020_50rela$variable == 2012,]
+dat51 <- t2020_51rela[t2020_51rela$variable == 2012,]
+dat52 <- t2020_52rela[t2020_52rela$variable == 2012,]
+dat53 <- t2020_53rela[t2020_53rela$variable == 2012,]
+df <- rbind(dat50,dat51,dat52,dat53)
+
+library(reshape2)
+df_w <- dcast(df, geo.time + maa + regime_fi ~ varname, value.var = "value")
+
+# Load the GISCO shapefile
+download.file("http://epp.eurostat.ec.europa.eu/cache/GISCO/geodatafiles/NUTS_2010_60M_SH.zip",
+    destfile="NUTS_2010_60M_SH.zip")
+# unzip
+unzip("NUTS_2010_60M_SH.zip")
+library(rgdal)
+# read into SpatialPolygonsDataFrame
+map <- readOGR(dsn = "./NUTS_2010_60M_SH/data", layer = "NUTS_RG_60M_2010")
+# subset the spatialpolygondataframe at NUTS2-level
+map_nuts0 <- map[map$STAT_LEVL_ == 0,]
+
+# dim show how many regions are in the spatialpolygondataframe
+dim(map_nuts0)
+# dim show how many regions are in the data.frame
+dim(df_w)
+# Spatial dataframe has 467 rows and attribute data 275.
+# We need to make attribute data to have similar number of rows
+NUTS_ID <- as.character(map_nuts0$NUTS_ID)
+VarX <- rep(NA, 35)
+dat <- data.frame(NUTS_ID,VarX)
+# then we shall merge this with Eurostat data.frame
+dat2 <- merge(dat,df_w,by.x="NUTS_ID",by.y="geo.time", all.x=TRUE)
+## merge this manipulated attribute data with the spatialpolygondataframe
+## rownames
+row.names(dat2) <- dat2$NUTS_ID
+row.names(map_nuts0) <- as.character(map_nuts0$NUTS_ID)
+## order data
+dat2 <- dat2[order(row.names(dat2)), ]
+map_nuts0 <- map_nuts0[order(row.names(map_nuts0)), ]
+## join
+library(maptools)
+dat2$NUTS_ID <- NULL
+shape <- spCbind(map_nuts0, dat2)
+
+
+
+## fortify spatialpolygondataframe into data.frame
+library(ggplot2)
+library(rgeos)
+shape$id <- rownames(shape@data)
+map.points <- fortify(shape, region = "id")
+map.df <- merge(map.points, shape, by = "id")
+# As we want to plot map faceted by years from 2003 to 2011
+# we have to melt it into long format
+#
+# (variable with numerical names got X-prefix during the spCbind-merge,
+# therefore the X-prefix in variable names)
+
+library(reshape2)
+map.df.l <- melt(data = map.df,
+                 id.vars = c("id","long","lat","group","NUTS_ID","maa","regime_fi"),
+                 measure.vars = c("t2020_50rela",
+                                  "t2020_51rela",
+                                  "t2020_52rela",
+                                  "t2020_53rela"))
+
+library(ggplot2)
+library(scales)
+# years for for loop
+
+map.df.l$nimi[map.df.l$variable == "t2020_50rela"] <- "kaikki yhdessä"
+map.df.l$nimi[map.df.l$variable == "t2020_51rela"] <- "työintensiteetti"
+map.df.l$nimi[map.df.l$variable == "t2020_52rela"] <- "tuloköyhyys"
+map.df.l$nimi[map.df.l$variable == "t2020_53rela"] <- "materiaalinen puute"
+
+```
+
+
+==============================================
+
+Neljä köyhyyssuuretta vuonna 2012 (keltainen = 15 %)
+
+```{r map, echo=FALSE}
+ggplot(data=map.df.l,
+         aes(long,lat,group=group)) +
+  geom_polygon(aes(fill = value),
+               colour="white",
+               size=.2) +
+  geom_polygon(data = map.df.l, aes(long,lat),
+               fill=NA,
+               colour="white",
+               size = 0.1) +
+   scale_fill_gradient2(low="#91cf60",
+                        mid = "#ffffbf",
+                        high="#fc8d59",
+                        midpoint = 15) +
+  coord_map(project="orthographic", xlim=c(-22,34),
+            ylim=c(35,70)) +
+  facet_wrap(~nimi) +
+  theme_minimal() +
+  theme(legend.text = element_text(size=16)) +
+  theme(axis.text = element_blank()) +
+  theme(axis.title = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+    theme(legend.position="right") +
+  theme(legend.title=element_blank()) +
+  theme(strip.text = element_text(size=20))
+```
+
+
+
+===========================================================
+
+Köyhyyden ja sosiaalisen syrjäytymisen riskissä olevien* **määrät** vuosina **2008 ja 2011** (1000 ihmistä)
+
+```{r plot1, echo=FALSE}
+
+df.abso.l2 <- subset(t2020_50abso, variable %in% c(2008,2011,2012))
+df.abso.l2$variable <- factor(df.abso.l2$variable)
+##
+df.abso.l2 <- df.abso.l2[!is.na(df.abso.l2$value), ]
+#
+order.data <- subset(df.abso.l2, variable == 2012)
+order.data <- order.data[order(-order.data$value), ]
+df.abso.l2$maa <- factor(df.abso.l2$maa, 
+                     levels = order.data$maa)
+
+df.abso.l2 <- df.abso.l2[!is.na(df.abso.l2$maa), ]
+df.abso.l2$variable <- factor(df.abso.l2$variable, levels=c(2008,2011,2012))
+
+# plot
+library(ggplot2)
+library(grid)
+library(wesanderson)
+# varitetaan viivat
+dat_plot <- df.abso.l2[df.abso.l2$variable != 2012,]
+
+#
+library(reshape2)
+dat_plot$varx <- paste0("x",dat_plot$variable)
+df_color <- dcast(dat_plot, maa ~ varx, value.var = "value")
+df_color$color[df_color$x2008 > df_color$x2011] <- "parantunut"
+df_color$color[df_color$x2008 < df_color$x2011] <- "heikentynyt"
+
+dat_plot <- merge(dat_plot,df_color[,c(1,4)],by="maa",all.x=TRUE)
+
+ggplot(dat_plot, aes(x=variable,y=value,
+                       color=color,group=maa)) +
+  geom_point(size=4) +
+  geom_line(size=2) +
+  facet_wrap(~maa, 1) + 
+  theme_minimal() +
+  theme(legend.text = element_text(size=20)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size=14)) +
+  theme(axis.text.y = element_text(size=16)) +
+  theme(strip.text.x = element_text(angle = 90, size=20)) +
+  scale_color_manual(values=wes.palette(2, "Darjeeling")) +
+  theme(legend.position="bottom") +
+  labs(y="1000 ihmistä",x="") +
+  theme(axis.title.y = element_text(size=22)) +
+  coord_cartesian(ylim=c(0,20000)) +
+  theme(legend.title=element_blank())
+
+
+```
+
+
+===========================================================
+
+Köyhyyden ja sosiaalisen syrjäytymisen riskissä olevien määrät vuosina **2011 ja 2012** (1000 ihmistä)
+
+
+```{r plot2, echo=FALSE}
+# plot
+library(ggplot2)
+library(grid)
+# varitetaan viivat
+dat_plot <- df.abso.l2[df.abso.l2$variable != 2008,]
+
+#
+library(reshape2)
+dat_plot$varx <- paste0("x",dat_plot$variable)
+df_color <- dcast(dat_plot, maa ~ varx, value.var = "value")
+df_color$color[df_color$x2011 > df_color$x2012] <- "parantunut"
+df_color$color[df_color$x2011 < df_color$x2012] <- "heikentynyt"
+
+dat_plot <- merge(dat_plot,df_color[,c(1,4)],by="maa",all.x=TRUE)
+
+ggplot(dat_plot, aes(x=variable,y=value,
+                       color=color,group=maa)) +
+  geom_point(size=4) +
+  geom_line(size=2) +
+  facet_wrap(~maa, 1) + 
+  theme_minimal() +
+  theme(legend.text = element_text(size=20)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size=14)) +
+  theme(axis.text.y = element_text(size=16)) +
+  theme(strip.text.x = element_text(angle = 90, size=20)) +
+  theme(legend.position="bottom") +
+  theme(axis.title.y = element_text(size=22)) +
+  theme(legend.title=element_blank()) +
+  scale_color_manual(values=wes.palette(2, "Darjeeling")) +
+  labs(y="1000 ihmistä",x="") +
+  coord_cartesian(ylim=c(0,20000))
+
+
+```
+
+
+=============================================================
+
+Kotitalouksien kulutusyksikköpainotettujen käytettävissä olevien tulojen jakaumat maittain vuonna 2011 (lähde: EU-silc 2010)
+
+
+```{r boxplot, echo=FALSE}
+
+# order countries by median income
+library(plyr)
+library(ggplot2)
+library(grid)
+order.data <- ddply(df.boxplot, .(maa), summarise, 
+               median    = median(HX090p, na.rm=TRUE))
+
+order.data <- order.data[order(order.data$median), ]
+df.boxplot$maa <- factor(df.boxplot$maa, 
+                     levels = order.data$maa)
+
+#############
+
+df.boxplot <- subset(df.boxplot, DB020 != 'CH')
+
+
+ggplot(df.boxplot, aes(x=maa, y=HX090p, fill=regime_fi)) +
+  geom_boxplot(outlier.size = 0, size=0.2) + 
+  geom_hline(aes(yintercept=14846), colour="Dim Grey", linetype="solid", size=1) +
+  annotate("text", x = "Puola", y = 17000, label = "EU mediaanitulo 2011 = 14846 euroa", size=5) +
+  scale_fill_manual(values=wes.palette(5, "Darjeeling")) +
+  labs(x="",y="Kotitalouden käytettävissä olevat tulot (euroa vuodessa)") +
+  coord_cartesian(ylim=c(0,60000)) +
+  theme_minimal() +
+  theme(legend.title=element_blank()) +
+  theme(legend.position="top") +
+  theme(legend.text = element_text(size=20)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size=20)) +
+  theme(axis.text.y = element_text(size=16)) +
+  theme(strip.text.x = element_text(angle = 90, size=20)) +
+  theme(axis.title.y = element_text(size=22)) +
+  theme(legend.title=element_blank()) +
+  guides(fill = guide_legend(nrow = 2)) +
+  theme(legend.key.size = unit(10, "mm"))
+
+```
