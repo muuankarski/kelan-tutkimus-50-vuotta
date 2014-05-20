@@ -23,31 +23,42 @@ Kelan tutkimus 50 vuotta: Kestävä hyvinvointi -seminaaripäivä 5.6.2014</br>
 knitr::opts_chunk$set(fig.width = 15, fig.height = 10, message = FALSE, warning = FALSE)
 ```
 
+
+
 Sisältö
 ===========================================================
 
-1. EU2020 köyhyystavoite
-    1. Köyhyyden ja sosiaalisen syrjäytymisen vähentämisen **tavoitteet**
-    2. Köyhyyden ja sosiaalisen syrjäytymisen vähentämisen **indikaattorit**
-2. 
 
+
+EU2020 köyhyystavoite:
+===========================================================
+incremental:true
+
+poistetaan köyhyys- tai syrjäytymisvaara vähintään 20 miljoonalta ihmiseltä
+
+Katsotaan tarkemmin mitä tarkoittaa
+-------------------------------------
+
+- **köyhyys- tai syrjäytymisvaara** ?
+- **20 miljoonalta ihmiseltä**?
 
 
 
 ==========================================
 type: subsection
 
-<h1>poistetaan köyhyys- tai syrjäytymisvaara vähintään 20 miljoonalta ihmiseltä.</h1>
+<h1>köyhyys- tai syrjäytymisvaara</h1>
+
+==========================================
 
 
-=======================================
+
+
+==========================================
 
 ## Suhteellinen tuloköyhyys
 
-Ne henkilöt, joiden kotitalouden
-käytettävissä olevat tulot kulutusyksikköä
-kohti ovat pienemmät kuin 60 prosenttia
-maan vastaavasta mediaanitulosta
+Henkilöt, joiden kotitalouden käytettävissä olevat tulot kulutusyksikköä kohti ovat pienemmät kuin 60 prosenttia maan vastaavasta mediaanitulosta
 
 ## Aineellinen puute
 
@@ -221,7 +232,7 @@ eu2020_poverty("t2020_50") # overall
 
 
 
-```{r_mapping, echo=FALSE, results='hide'}
+```{r_mapping, cache=TRUE, echo=FALSE, results='hide'}
 dat50 <- t2020_50rela[t2020_50rela$variable == 2012,]
 dat51 <- t2020_51rela[t2020_51rela$variable == 2012,]
 dat52 <- t2020_52rela[t2020_52rela$variable == 2012,]
@@ -313,9 +324,9 @@ ggplot(data=map.df.l,
                fill=NA,
                colour="white",
                size = 0.1) +
-   scale_fill_gradient2(low="#486830",
+   scale_fill_gradient2(low="#00A08A",
                         mid = "#ffffbf",
-                        high="#975535",
+                        high="#FF0000",
                         midpoint = 15) +
   coord_map(project="orthographic", xlim=c(-22,34),
             ylim=c(35,70)) +
@@ -330,7 +341,7 @@ ggplot(data=map.df.l,
   theme(strip.text = element_text(size=20))
 ```
 
-
+wes.palette(2, "Darjeeling")
 
 ===========================================================
 
@@ -424,9 +435,7 @@ ggplot(dat_plot, aes(x=variable,y=value,
   theme(legend.title=element_blank()) +
   scale_color_manual(values=wes.palette(2, "Darjeeling")) +
   labs(y="1000 ihmistä",x="") +
-  coord_cartesian(ylim=c(0,20000)) + 
-  coord_flip()
-
+  coord_cartesian(ylim=c(0,20000))
 
 ```
 

@@ -21,31 +21,42 @@ Kelan tutkimus 50 vuotta: Kestävä hyvinvointi -seminaaripäivä 5.6.2014</br>
 
 
 
+
+
 Sisältö
 ===========================================================
 
-1. EU2020 köyhyystavoite
-    1. Köyhyyden ja sosiaalisen syrjäytymisen vähentämisen **tavoitteet**
-    2. Köyhyyden ja sosiaalisen syrjäytymisen vähentämisen **indikaattorit**
-2. 
 
+
+EU2020 köyhyystavoite:
+===========================================================
+incremental:true
+
+poistetaan köyhyys- tai syrjäytymisvaara vähintään 20 miljoonalta ihmiseltä
+
+Katsotaan tarkemmin mitä tarkoittaa
+-------------------------------------
+
+- **köyhyys- tai syrjäytymisvaara** ?
+- **20 miljoonalta ihmiseltä**?
 
 
 
 ==========================================
 type: subsection
 
-<h1>poistetaan köyhyys- tai syrjäytymisvaara vähintään 20 miljoonalta ihmiseltä.</h1>
+<h1>köyhyys- tai syrjäytymisvaara</h1>
+
+==========================================
 
 
-=======================================
+
+
+==========================================
 
 ## Suhteellinen tuloköyhyys
 
-Ne henkilöt, joiden kotitalouden
-käytettävissä olevat tulot kulutusyksikköä
-kohti ovat pienemmät kuin 60 prosenttia
-maan vastaavasta mediaanitulosta
+Henkilöt, joiden kotitalouden käytettävissä olevat tulot kulutusyksikköä kohti ovat pienemmät kuin 60 prosenttia maan vastaavasta mediaanitulosta
 
 ## Aineellinen puute
 
@@ -103,28 +114,14 @@ type: subsection
 
 Neljä köyhyyssuuretta vuonna 2012 (keltainen = 15 %)
 
-![plot of chunk map](kela_semma_2014-figure/map.png) 
 
 
 
-===========================================================
-
-Köyhyyden ja sosiaalisen syrjäytymisen riskissä olevien* **määrät** vuosina **2008 ja 2011** (1000 ihmistä)
-
-![plot of chunk plot1](kela_semma_2014-figure/plot1.png) 
 
 
-===========================================================
-
-Köyhyyden ja sosiaalisen syrjäytymisen riskissä olevien määrät vuosina **2011 ja 2012** (1000 ihmistä)
 
 
-![plot of chunk plot2](kela_semma_2014-figure/plot2.png) 
 
-
-=============================================================
-
-Kotitalouksien kulutusyksikköpainotettujen käytettävissä olevien tulojen jakaumat maittain vuonna 2011 (lähde: EU-silc 2010)
-
-
-![plot of chunk boxplot](kela_semma_2014-figure/boxplot.png) 
+```
+Error in eval(expr, envir, enclos) : could not find function "ggplot"
+```
