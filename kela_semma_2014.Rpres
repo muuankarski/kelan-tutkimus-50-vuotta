@@ -313,9 +313,9 @@ ggplot(data=map.df.l,
                fill=NA,
                colour="white",
                size = 0.1) +
-   scale_fill_gradient2(low="#91cf60",
+   scale_fill_gradient2(low="#486830",
                         mid = "#ffffbf",
-                        high="#fc8d59",
+                        high="#975535",
                         midpoint = 15) +
   coord_map(project="orthographic", xlim=c(-22,34),
             ylim=c(35,70)) +
@@ -370,7 +370,7 @@ dat_plot <- merge(dat_plot,df_color[,c(1,4)],by="maa",all.x=TRUE)
 ggplot(dat_plot, aes(x=variable,y=value,
                        color=color,group=maa)) +
   geom_point(size=4) +
-  geom_line(size=2) +
+  geom_line(aes(group=maa),size=2) +
   facet_wrap(~maa, 1) + 
   theme_minimal() +
   theme(legend.text = element_text(size=20)) +
@@ -424,7 +424,8 @@ ggplot(dat_plot, aes(x=variable,y=value,
   theme(legend.title=element_blank()) +
   scale_color_manual(values=wes.palette(2, "Darjeeling")) +
   labs(y="1000 ihmistä",x="") +
-  coord_cartesian(ylim=c(0,20000))
+  coord_cartesian(ylim=c(0,20000)) + 
+  coord_flip()
 
 
 ```
