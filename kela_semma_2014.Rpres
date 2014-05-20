@@ -315,6 +315,7 @@ map.df.l$nimi[map.df.l$variable == "t2020_53rela"] <- "materiaalinen puute"
 Neljä köyhyyssuuretta vuonna 2012 (keltainen = 15 %)
 
 ```{r map, echo=FALSE}
+library(ggplot2)
 ggplot(data=map.df.l,
          aes(long,lat,group=group)) +
   geom_polygon(aes(fill = value),
@@ -341,7 +342,7 @@ ggplot(data=map.df.l,
   theme(strip.text = element_text(size=20))
 ```
 
-wes.palette(2, "Darjeeling")
+
 
 ===========================================================
 
