@@ -43,7 +43,9 @@ html * {
   background: -ms-radial-gradient(center, circle cover, #555a5f 0%, #1c1e20 100%);
   background: radial-gradient(center, circle cover, #555a5f 0%, #1c1e20 100%);
   background-color: #2b2b2b; */
-  background-image: url('figure/yosuunnistus.JPG');
+  background-image: url('figure/oranssi_tausta.png');
+  background-color:#000000;
+  background-repeat:no-repeat;
 }
 
 .section .reveal h1,

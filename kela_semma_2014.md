@@ -12,11 +12,6 @@ Kelan tutkimus 50 vuotta: Kestävä hyvinvointi -seminaaripäivä 5.6.2014</br>
 *yliopisto-opettaja* </br>
 [Sosiaalitieteden laitos, Turun yliopisto](https://www.utu.fi/fi/yksikot/soc/yksikot/sosiaalitieteet/Sivut/home.aspx) </br>
 
-<div class="github-fork-ribbon-wrapper right">
-<div class="github-fork-ribbon">
-<a href="https://github.com/muuankarski/" style="color:white;">Fork me on GitHub</a>
-</div>
-</div>
 
 
 
