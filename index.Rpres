@@ -13,41 +13,21 @@ Kelan tutkimus 50 vuotta: Kestävä hyvinvointi -seminaaripäivä 5.6.2014</br>
 [Sosiaalitieteden laitos, Turun yliopisto](https://www.utu.fi/fi/yksikot/soc/yksikot/sosiaalitieteet/Sivut/home.aspx) </br>
 
 
-
-
 ```{r, echo=FALSE}
-knitr::opts_chunk$set(fig.width = 15, fig.height = 10, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(fig.width = 15, fig.height = 10, message = FALSE, warning = FALSE, dev='svg', cache=TRUE, echo=FALSE)
 ```
-
-
-
-Sisältö
-===========================================================
-
 
 
 EU2020 köyhyystavoite:
 ===========================================================
-incremental:true
 
-poistetaan köyhyys- tai syrjäytymisvaara vähintään 20 miljoonalta ihmiseltä
-
-Katsotaan tarkemmin mitä tarkoittaa
--------------------------------------
-
-- **köyhyys- tai syrjäytymisvaara** ?
-- **20 miljoonalta ihmiseltä**?
-
+>poistetaan köyhyys- tai syrjäytymisvaara vähintään 20 miljoonalta ihmiseltä
 
 
 ==========================================
 type: subsection
 
-<h1>köyhyys- tai syrjäytymisvaara</h1>
-
-==========================================
-
-
+<h1>Köyhyys- tai syrjäytymisvaaran mittarit</h1>
 
 
 ==========================================
@@ -55,6 +35,13 @@ type: subsection
 ## Suhteellinen tuloköyhyys
 
 Henkilöt, joiden kotitalouden käytettävissä olevat tulot kulutusyksikköä kohti ovat pienemmät kuin 60 prosenttia maan vastaavasta mediaanitulosta
+
+***
+
+![](figure/eu2020venn1_fi.png)
+
+
+==========================================
 
 ## Aineellinen puute
 
@@ -70,79 +57,83 @@ Kotitaloudella on puutteita aineellisessa elintasossa, jos vähintään neljä e
 8. ei varaa autoon
 9. ei varaa lämmittää asuntoaan riittävästi
 
-## Vajaatyöllisyys
-
-Kotitalouden työikäisten eikuisten työllisinä oloaikana vuoden aikana kuvaa työssäkäynnin intensiteettiä. Mittari kuvaa sitä, kuinka suuri osa väestöstä elää niissä kotitalouksissa, joissa työllisenä oloaika jää vähäisemmäksi kuin 20 prosenttia mahdollisesta työhön käytettävissä olevasta ajasta.
-
-
-=========================================
-
-![](figure/eu2020venn1_fi.png)
-
-
-
-===========================================
+***
 
 ![](figure/eu2020venn2_fi.png)
 
 
-===========================================
+
+==========================================
+
+## Vajaatyöllisyys
+
+**Lasketaan kotitalouksien työikäisen (18–59-vuotiaat) väestön työllisyysasteen perusteella**. Kotitalouden työikäiset aikuiset muodostavat potentiaalisen työssä kävijöiden perusjoukon. Heidän työllisinä oloaikansa vuoden aikana kuvaa työssäkäynnin intensiteettiä. 18–24-vuotiaat opiskelijat jätetään laskelman ulkopuolelle. **Kotitalouden työintensiteetti lasketaan suhteuttamalla työikäisten jäsenten työllisyyskuukausien summa kaikkien työikäisten yhteenlaskettuun potentiaaliseen aikaan** (12 kuukautta kullakin). Lopuksi otetaan huomioon kaikki näiden kotitalouksien alle 60-vuotiaat jäsenet, myös lapset. **Mittari kuvaa sitä, kuinka suuri osa väestöstä elää niissä kotitalouksissa, joissa työllisenä oloaika jää vähäisemmäksi kuin 20 prosenttia mahdollisesta työhön käytettävissäolevasta ajasta.**
+
+***
 
 ![](figure/eu2020venn3_fi.png)
 
 
-===========================================
+
+==========================================
+
+## Köyhyyden ja sosiaalisen syrjäytymisen riskin kokonaismittari
+
+Niiden kotitalouden jäsenet ovat köyhyyden ja sosiaalisen syrjätymisen riskissä, joiden kohdalla yksi tai useampi kolmesta indikaattorista toteutuu.
+
+
+***
 
 ![](figure/eu2020venn4_fi.png)
 
 
-===========================================
+==========================================
 type: subsection
 
-<h1>Suomi kansainvälisessä vertailussa</h1>
+<h1>Euroopan maat köyhyys- tai syrjäytymisvaaran mittareiden valossa</h1>
+
 
 ```{r dataa_graafeihin, cache=TRUE, echo=FALSE, results='hide'}
 ### Jakaumadata
-
-#load("/media/baikal/Asiakirjat/data/eu_silc/2010/cross_rev1/hh_merge.Rdata")
-load("~/data/eu_silc/2011/cross_rev1/hh_merge.RData")
-
-df.boxplot <- subset(hh_merge, select=c("HH_ID","DB020","HX090"))
-
-library(RCurl)
-GHurl <- getURL("https://raw.githubusercontent.com/muuankarski/data/master/europe/eu_cntry.csv")
-dat <- read.csv(text = GHurl)
-
-df.boxplot <- merge(df.boxplot,dat,by.x="DB020",by.y="NUTS_ID")
-rm(hh_merge)
+# #load("/media/baikal/Asiakirjat/data/eu_silc/2010/cross_rev1/hh_merge.Rdata")
+# load("~/data/eu_silc/2011/cross_rev1/hh_merge.RData")
+# 
+# df.boxplot <- subset(hh_merge, select=c("HH_ID","DB020","HX090"))
+# 
+# library(RCurl)
+# GHurl <- getURL("https://raw.githubusercontent.com/muuankarski/data/master/europe/eu_cntry.csv")
+# dat <- read.csv(text = GHurl)
+# 
+# df.boxplot <- merge(df.boxplot,dat,by.x="DB020",by.y="NUTS_ID")
+# rm(hh_merge)
 
 
 #########################
 # consumer prices
-
-library(SmarterPoland)
-searchresults <- grepEurostatTOC("Consumer Prices")
-df <- getEurostatRCV(kod = "prc_hicp_aind")
-
-df11 <- subset(df, time %in% "2011")
-df.index <- subset(df, infotype %in% "AVX")
-
-df.index$time <- factor(df.index$time)
-df.index$time.num <- as.numeric(levels(df.index$time))[df.index$time]
-
-df.index.11 <- subset(df.index, time.num == 2011)
-
-df.index.11.all <- subset(df.index.11, coicop == "CP00")
-
-price.index <- df.index.11.all[,c(3,5,6)]
-names(price.index) <- c("geo.time","price.index","year")
-
-
-#########################
-
-df.boxplot <- merge(df.boxplot,price.index, by.x="DB020", by.y="geo.time", all.x=TRUE)
-# hintavakioidut tulot 
-df.boxplot$HX090p <- df.boxplot$HX090/df.boxplot$price.index*100
+# 
+# library(SmarterPoland)
+# searchresults <- grepEurostatTOC("Consumer Prices")
+# df <- getEurostatRCV(kod = "prc_hicp_aind")
+# 
+# df11 <- subset(df, time %in% "2011")
+# df.index <- df[df$infotype %in% "AVX",]
+# 
+# df.index$time <- factor(df.index$time)
+# df.index$time.num <- as.numeric(levels(df.index$time))[df.index$time]
+# 
+# df.index.11 <- subset(df.index, time.num == 2011)
+# 
+# df.index.11.all <- subset(df.index.11, coicop == "CP00")
+# 
+# price.index <- df.index.11.all[,c(3,5,6)]
+# names(price.index) <- c("geo.time","price.index","year")
+# 
+# 
+# #########################
+# 
+# df.boxplot <- merge(df.boxplot,price.index, by.x="DB020", by.y="geo.time", all.x=TRUE)
+# # hintavakioidut tulot 
+# df.boxplot$HX090p <- df.boxplot$HX090/df.boxplot$price.index*100
 
 ######################################3
 
@@ -227,16 +218,214 @@ eu2020_poverty("t2020_50") # overall
 ```
 
 
+========================================================
 
-```{r_mapping, cache=TRUE, echo=FALSE, results='hide'}
-dat50 <- t2020_50rela[t2020_50rela$variable == 2012,]
-dat51 <- t2020_51rela[t2020_51rela$variable == 2012,]
-dat52 <- t2020_52rela[t2020_52rela$variable == 2012,]
-dat53 <- t2020_53rela[t2020_53rela$variable == 2012,]
+
+```{r tolppadata}
+# The palette with grey:
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+# The palette with black:
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+library(grid)
+
+df.rela <- rbind(t2020_50rela,t2020_51rela,t2020_52rela,t2020_53rela)
+df.abso <- rbind(t2020_50abso,t2020_51abso,t2020_52abso,t2020_53abso)
+
+df.rela$suure <- "väestöosuus (prosenttia)"
+df.abso$suure <- "väestömäärä (tuhatta)"
+
+df.rela$nimi[df.rela$varname == "t2020_50rela"] <- "kaikki yhdessä"
+df.rela$nimi[df.rela$varname == "t2020_51rela"] <- "työintensiteetti"
+df.rela$nimi[df.rela$varname == "t2020_52rela"] <- "tuloköyhyys"
+df.rela$nimi[df.rela$varname == "t2020_53rela"] <- "materiaalinen puute"
+
+df.abso$nimi[df.abso$varname == "t2020_50abso"] <- "kaikki yhdessä"
+df.abso$nimi[df.abso$varname == "t2020_51abso"] <- "työintensiteetti"
+df.abso$nimi[df.abso$varname == "t2020_52abso"] <- "tuloköyhyys"
+df.abso$nimi[df.abso$varname == "t2020_53abso"] <- "materiaalinen puute"
+
+df.both <- rbind(df.rela,df.abso)
+
+```
+
+Tuloköyhyys
+
+```{r line1}
+library(ggplot2)
+library(grid)
+df.plot <- df.both[df.both$nimi == "tuloköyhyys",]
+df.plot <- df.plot[!is.na(df.plot$value), ]
+
+
+ggplot(df.plot, aes(x=variable,y=value,color=regime_fi,group=maa)) +
+  geom_point(size=3) + 
+  geom_line(size=1.5) +
+      geom_text(data=merge(df.plot, 
+                         aggregate(variable ~ maa, df.plot, max),
+                         by=c("variable","maa")),
+              aes(x=variable,y=value,color=regime_fi,label=maa),
+              hjust=0.5,vjust=-1,size=6) +
+  #facet_wrap(~nimi, ncol = 2) +
+  scale_color_manual(values=cbbPalette) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme(legend.key.size = unit(10, "mm")) +
+  theme(text = element_text(size=22)) +
+  theme(legend.title = element_blank()) +
+  theme(axis.title = element_blank()) +
+  theme(legend.position = "bottom") +
+  facet_wrap(~suure, scales = "free_y")
+
+```
+
+==========================================================
+
+Materiaalinen puute
+
+```{r line2}
+library(grid)
+df.plot <- df.both[df.both$nimi == "materiaalinen puute",]
+df.plot <- df.plot[!is.na(df.plot$value), ]
+
+
+ggplot(df.plot, aes(x=variable,y=value,color=regime_fi,group=maa)) +
+  geom_point(size=3) + 
+  geom_line(size=1.5) +
+      geom_text(data=merge(df.plot, 
+                         aggregate(variable ~ maa, df.plot, max),
+                         by=c("variable","maa")),
+              aes(x=variable,y=value,color=regime_fi,label=maa),
+              hjust=0.5,vjust=-1,size=6) +
+  #facet_wrap(~nimi, ncol = 2) +
+  scale_color_manual(values=cbbPalette) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme(legend.key.size = unit(10, "mm")) +
+  theme(text = element_text(size=22)) +
+  theme(legend.title = element_blank()) +
+  theme(axis.title = element_blank()) +
+  theme(legend.position = "bottom") +
+  facet_wrap(~suure, scales = "free_y")
+
+```
+
+
+==========================================================
+
+Työintensiteetti
+
+```{r line3}
+library(grid)
+df.plot <- df.both[df.both$nimi == "työintensiteetti",]
+df.plot <- df.plot[!is.na(df.plot$value), ]
+
+
+ggplot(df.plot, aes(x=variable,y=value,color=regime_fi,group=maa)) +
+  geom_point(size=3) + 
+  geom_line(size=1.5) +
+      geom_text(data=merge(df.plot, 
+                         aggregate(variable ~ maa, df.plot, max),
+                         by=c("variable","maa")),
+              aes(x=variable,y=value,color=regime_fi,label=maa),
+              hjust=0.5,vjust=-1,size=6) +
+  #facet_wrap(~nimi, ncol = 2) +
+  scale_color_manual(values=cbbPalette) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme(legend.key.size = unit(10, "mm")) +
+  theme(text = element_text(size=22)) +
+  theme(legend.title = element_blank()) +
+  theme(axis.title = element_blank()) +
+  theme(legend.position = "bottom") +
+  facet_wrap(~suure, scales = "free_y")
+
+```
+
+
+==========================================================
+
+Kaikki yhdessä
+
+```{r line4}
+library(grid)
+df.plot <- df.both[df.both$nimi == "kaikki yhdessä",]
+df.plot <- df.plot[!is.na(df.plot$value), ]
+
+
+ggplot(df.plot, aes(x=variable,y=value,color=regime_fi,group=maa)) +
+  geom_point(size=3) + 
+  geom_line(size=1.5) +
+      geom_text(data=merge(df.plot, 
+                         aggregate(variable ~ maa, df.plot, max),
+                         by=c("variable","maa")),
+              aes(x=variable,y=value,color=regime_fi,label=maa),
+              hjust=0.5,vjust=-1,size=6) +
+  #facet_wrap(~nimi, ncol = 2) +
+  scale_color_manual(values=cbbPalette) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme(legend.key.size = unit(10, "mm")) +
+  theme(text = element_text(size=22)) +
+  theme(legend.title = element_blank()) +
+  theme(axis.title = element_blank()) +
+  theme(legend.position = "bottom") +
+  facet_wrap(~suure, scales = "free_y")
+
+```
+
+
+```{r tolppa11, eval=FALSE}
+
+df.plot <- df.rela[df.rela$variable == 2007,]
+
+order.data <- df.plot[df.plot$nimi == "tuloköyhyys",]
+order.data <- order.data[order(-order.data$value), ]
+df.plot$maa <- factor(df.plot$maa,
+                     levels = order.data$maa)
+# datPlotL$group_general <- factor(datPlotL$group_general,
+#                                  levels = c("CEE","CIS","Western Europe"))
+
+
+ggplot(df.plot, aes(x=maa,y=value,fill=regime_fi)) +
+  geom_bar(stat="identity") +
+  #geom_point(size=3) + 
+  facet_wrap(~nimi, ncol = 2) +
+  scale_fill_manual(values=wes.palette(5, "Darjeeling")) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme(legend.key.size = unit(10, "mm")) +
+  theme(text = element_text(size=22)) +
+  theme(legend.title = element_blank()) +
+  theme(legend.position = "top") +
+  theme(axis.title = element_blank()) +
+  coord_flip()
+
+```
+
+
+```{r tolppa2, eval=FALSE}
+df.plot <- df.rela[df.rela$variable == c(2005,2010),]
+
+
+ggplot(df.plot, aes(x=maa,y=value,color=regime_fi)) +
+  geom_point(size=3) + 
+  facet_grid(nimi~variable) +
+  scale_color_manual(values=wes.palette(5, "Darjeeling")) +
+  theme_bw() +
+  theme(legend.position="top") +
+  coord_flip()
+```
+
+```{r_mapping, cache=TRUE, echo=FALSE, results='hide', eval=TRUE}
+dat50 <- t2020_50rela[t2020_50rela$variable == 2011,]
+dat51 <- t2020_51rela[t2020_51rela$variable == 2011,]
+dat52 <- t2020_52rela[t2020_52rela$variable == 2011,]
+dat53 <- t2020_53rela[t2020_53rela$variable == 2011,]
 df <- rbind(dat50,dat51,dat52,dat53)
 
 library(reshape2)
-df_w <- dcast(df, geo.time + maa + regime_fi ~ varname, value.var = "value")
+df_w <- dcast(df, geo.time + maa + regime_fi  ~ varname, value.var = "value")
 
 # Load the GISCO shapefile
 download.file("http://epp.eurostat.ec.europa.eu/cache/GISCO/geodatafiles/NUTS_2010_60M_SH.zip",
@@ -285,33 +474,47 @@ map.df <- merge(map.points, shape, by = "id")
 #
 # (variable with numerical names got X-prefix during the spCbind-merge,
 # therefore the X-prefix in variable names)
-
+# 
 library(reshape2)
 map.df.l <- melt(data = map.df,
-                 id.vars = c("id","long","lat","group","NUTS_ID","maa","regime_fi"),
+                 id.vars = c("id","long","lat","order","group","NUTS_ID","maa","regime_fi"),
                  measure.vars = c("t2020_50rela",
                                   "t2020_51rela",
                                   "t2020_52rela",
                                   "t2020_53rela"))
 
+# 
 library(ggplot2)
 library(scales)
-# years for for loop
-
+# # years for for loop
+# 
 map.df.l$nimi[map.df.l$variable == "t2020_50rela"] <- "kaikki yhdessä"
 map.df.l$nimi[map.df.l$variable == "t2020_51rela"] <- "työintensiteetti"
 map.df.l$nimi[map.df.l$variable == "t2020_52rela"] <- "tuloköyhyys"
 map.df.l$nimi[map.df.l$variable == "t2020_53rela"] <- "materiaalinen puute"
+# iron curtain
+iron_curtain <- readOGR(dsn = "./iron_curtain", layer = "iron_curtain")
+iron_curtain$id <- rownames(iron_curtain@data)
+map.points <- fortify(iron_curtain, region = "id")
+iron_curtain.df <- merge(map.points, iron_curtain, by = "id")
+#
+iron_curtain.df <- iron_curtain.df[order(iron_curtain.df$order), ]
 
 ```
 
+==========================================
+type: subsection
+
+<h1>Mittareihin liittyviä ongelmia</h1>
 
 ==============================================
 
-Neljä köyhyyssuuretta vuonna 2012 (keltainen = 15 %)
+Neljä köyhyyssuuretta vuonna 2011 (keltainen = 15 %)
 
-```{r map, echo=FALSE}
+```{r map, echo=FALSE, eval=TRUE}
+
 library(ggplot2)
+library(scales)
 ggplot(data=map.df.l,
          aes(long,lat,group=group)) +
   geom_polygon(aes(fill = value),
@@ -325,7 +528,7 @@ ggplot(data=map.df.l,
                         mid = "#ffffbf",
                         high="#FF0000",
                         midpoint = 15) +
-  coord_map(project="orthographic", xlim=c(-22,34),
+  coord_map(project="orthographic", xlim=c(-12,30),
             ylim=c(35,70)) +
   facet_wrap(~nimi) +
   theme_minimal() +
@@ -336,13 +539,125 @@ ggplot(data=map.df.l,
     theme(legend.position="right") +
   theme(legend.title=element_blank()) +
   theme(strip.text = element_text(size=20))
+
+```
+
+
+==============================================
+
+Kotitalouden mediaanitulot (keltainen = EU27 mediaanitulo)
+
+```{r map2, echo=FALSE, fig.width = 10, fig.height = 12}
+library(ggplot2)
+library(scales)
+cnames <- stats:::aggregate.formula(cbind(long, lat) ~ maa, 
+                                    data=map.df.l[map.df.l$nimi == "tuloköyhyys",], 
+                                    mean)
+map.df.l$nimi <- factor(map.df.l$nimi)
+
+income <- getEurostatRCV(kod = "ilc_di03")
+inc <- income[income$sex == "T",]
+inc <- inc[inc$indic_il == "MED_E",]
+inc <- inc[inc$unit == "EUR",]
+inc <- inc[inc$time == 2011,]
+inc <- inc[inc$age == "TOTAL",]
+
+inc$geo <- as.character(inc$geo)
+inc <- inc[nchar(inc$geo) == 2,]
+tulok <- map.df.l[map.df.l$nimi == "tuloköyhyys",]
+names(inc)[names(inc) == 'value'] <- 'tulot'
+names(tulok)[names(tulok) == 'value'] <- 'tulokoyhyys'
+
+map.df <- merge(tulok,inc[,c("geo","tulot")],by.x="NUTS_ID",by.y="geo")
+map.df <- map.df[order(map.df$order), ]
+
+map.df <- map.df[order(map.df$order), ]
+
+ggplot(data=map.df,
+         aes(long,lat,group=group)) +
+  geom_polygon(aes(fill = tulot),
+               colour="white",
+               size=.2) +
+  geom_polygon(data = map.df, 
+               aes(long,lat),
+               fill=NA,
+               colour="white",
+               size = 0.1) +
+   scale_fill_gradient2(low="#FF0000",
+                        mid = "#ffffbf",
+                        high="#00A08A",
+                        midpoint =  14854) +
+    coord_map(project="orthographic", xlim=c(-12,25),
+            ylim=c(35,70)) +
+  theme_minimal() +
+  theme(legend.text = element_text(size=20)) +
+  theme(axis.text = element_blank()) +
+  theme(axis.title = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+    theme(legend.position="right") +
+  theme(legend.title=element_blank()) +
+  theme(strip.text = element_text(size=24)) +
+  geom_path(data=iron_curtain.df, 
+            aes(long,lat,group=group),
+            color=alpha(colour = "purple", alpha = .7),
+              size=2.5) +
+  geom_text(data=cnames, 
+            aes(long, lat, label = maa, 
+                group=maa), size=6, color="black")
+  
+```
+
+
+***
+
+Suhteellinen tuloköyhyysriski (keltainen = EU27 keskiarvo)
+
+```{r map4, fig.width = 10, fig.height = 12}
+
+ggplot(data=map.df,
+         aes(long,lat,group=group)) +
+  geom_polygon(aes(fill = tulokoyhyys),
+               colour="white",
+               size=.2) +
+  geom_polygon(data = map.df, 
+               aes(long,lat),
+               fill=NA,
+               colour="white",
+               size = 0.1) +
+   scale_fill_gradient2(low="#00A08A",
+                        mid = "#ffffbf",
+                        high="#FF0000",
+                        midpoint =  16.9) +
+    coord_map(project="orthographic", xlim=c(-12,25),
+            ylim=c(35,70)) +
+  theme_minimal() +
+  theme(legend.text = element_text(size=20)) +
+  theme(axis.text = element_blank()) +
+  theme(axis.title = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+    theme(legend.position="right") +
+  theme(legend.title=element_blank()) +
+  theme(strip.text = element_text(size=24)) +
+  geom_path(data=iron_curtain.df, 
+            aes(long,lat,group=group),
+            color=alpha(colour = "purple", alpha = .7),
+              size=2.3) +
+  geom_text(data=cnames, 
+            aes(long, lat, label = maa, 
+                group=maa), size=6, color="black")
+
 ```
 
 
 
+==========================================
+type: subsection
+
+<h1>EU2020 tavoitteiden saavuttaminen</h1>
+
 ===========================================================
 
-Köyhyyden ja sosiaalisen syrjäytymisen riskissä olevien* **määrät** vuosina **2008 ja 2011** (1000 ihmistä)
+Köyhyyden ja sosiaalisen syrjäytymisen riskissä olevien **määrät** vuosina **2008 ja 2011** (1000 ihmistä)
 
 ```{r plot1, echo=FALSE}
 
@@ -442,7 +757,7 @@ ggplot(dat_plot, aes(x=variable,y=value,
 Kotitalouksien kulutusyksikköpainotettujen käytettävissä olevien tulojen jakaumat maittain vuonna 2011 (lähde: EU-silc 2010)
 
 
-```{r boxplot, echo=FALSE}
+```{r boxplot, eval=FALSE}
 
 # order countries by median income
 library(plyr)
