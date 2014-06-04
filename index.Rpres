@@ -511,7 +511,6 @@ incremental: true
 - yksi indikaattoreista on suhteellinen, muut ovat absoluuttisia
     - molemmissa omat ongelmansa elintasoltaan rajusti erilaisten maiden vertailussa
 - kokonaistavoite on määrällinen ja ensisijaisesti EU:n tasolla - kokonaistavoitteessa pienten maiden köyhyys on pieni ongelma
-- joku muu kritiikki
 
 ===========================================
 
@@ -711,6 +710,39 @@ ggplot(data=map.df,
 ```
 
 
+Suomen tilanne tarkemmin
+==========================================
+
+
+```{r suomi1}
+library(ggplot2)
+library(grid)
+df.plot <- df.both[df.both$maa == "Suomi",]
+df.plot <- df.plot[!is.na(df.plot$value), ]
+
+ggplot(df.plot, aes(x=variable,y=value,color=nimi,group=nimi)) +
+  geom_point(size=3) + 
+  geom_line(size=1.5) +
+      geom_text(data=merge(df.plot, 
+                         aggregate(variable ~ nimi, df.plot, max),
+                         by=c("variable","nimi")),
+              aes(x=variable,y=value,color=nimi,label=nimi),
+              hjust=1.5,vjust=-1,size=6) +
+  #facet_wrap(~nimi, ncol = 2) +
+  scale_color_manual(values=cbbPalette) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme(legend.key.size = unit(10, "mm")) +
+  theme(text = element_text(size=22)) +
+  theme(legend.title = element_blank()) +
+  theme(axis.title = element_blank()) +
+  theme(legend.position = "bottom") +
+  facet_wrap(~suure, scales = "free_y")
+
+```
+
+
+
 ==========================================
 type: subsection
 
@@ -811,3 +843,9 @@ ggplot(dat_plot, aes(x=variable,y=value,
   coord_cartesian(ylim=c(0,20000))
 
 ```
+
+
+==================================================
+type:subsection
+
+<h1>Kiitos</h1>
