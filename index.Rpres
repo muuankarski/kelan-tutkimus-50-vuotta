@@ -9,7 +9,7 @@ Kelan tutkimus 50 vuotta: Kestävä hyvinvointi -seminaaripäivä 5.6.2014</br>
 
 
 <a href="http://markuskainu.fi">Markus Kainu</a></br>
-*tohtorikoulutettava* </br>
+*yliopisto-opettaja* </br>
 [Sosiaalitieteden laitos, Turun yliopisto](https://www.utu.fi/fi/yksikot/soc/yksikot/sosiaalitieteet/Sivut/home.aspx) </br>
 
 
@@ -26,7 +26,7 @@ EU2020 köyhyystavoite
 ==========================================
 type: subsection
 
-<h1>Kuka on koyhyyden ja syrjäytymisen vaarassa?</h1>
+<h1>Mitä mitataan ja </br> kuinka moni on köyhyyden ja syrjäytymisen vaarassa?</h1>
 
 
 ==========================================
@@ -508,6 +508,7 @@ Tavoitteen ja mittareiden kritiikkiä
 incremental: true
 
 - tavoitteiden teoriaperusta on ristiriitainen
+- 
 - yksi indikaattoreista on suhteellinen, muut ovat absoluuttisia
     - molemmissa omat ongelmansa elintasoltaan rajusti erilaisten maiden vertailussa
 - kokonaistavoite on määrällinen ja ensisijaisesti EU:n tasolla - kokonaistavoitteessa pienten maiden köyhyys on pieni ongelma
@@ -706,6 +707,63 @@ ggplot(data=map.df,
   geom_text(data=cnames, 
             aes(long, lat, label = maa, 
                 group=maa), size=6, color="black")
+
+```
+
+
+```{r suhteellinen2, eval=FALSE}
+library(SmarterPoland)
+
+searchresults <- grepEurostatTOC("income")
+
+income <- getEurostatRCV(kod = "nama_aux_gph")
+
+#mean(income[income$indic_il == "MED_E",]$value, na.rm = TRUE)
+#mean(income[income$indic_il == "MEI_E",]$value, na.rm = TRUE)
+
+
+inc <- income[income$indic_na == "RGDPH",]
+inc <- inc[inc$unit == "EUR_HAB",]
+inc$time <- as.numeric(levels(inc$time))[inc$time]
+inc <- inc[inc$time %in% c(2004:2012),]
+
+pov <- df.rela[df.rela$nimi == "tuloköyhyys",]
+pov <- pov[pov$variable %in% c(2004:2012),]
+
+df.plot <- merge(pov,inc,by.x=c("geo.time","variable"),by.y=c("geo","time"), all.x=TRUE)
+
+names(df.plot)[names(df.plot) == 'value.x'] <- 'tuloköyhyys'
+names(df.plot)[names(df.plot) == 'value.y'] <- 'BKT_per_capita'
+
+df.plot <- df.plot[!is.na(df.plot$tuloköyhyys), ]
+df.plot <- df.plot[!is.na(df.plot$BKT_per_capita), ]
+
+ggplot(data=df.plot, 
+       aes(x = BKT_per_capita, y = tuloköyhyys, 
+           color = geo.time, label=variable)) + 
+    geom_point(size=1.5) + 
+    geom_path() + 
+    geom_text(size=3, hjust=1.4) +
+   theme(legend.position="none") +
+    geom_text(data=merge(df.plot, 
+                         aggregate(variable ~ maa, df.plot, max),
+                         by=c("variable","maa")),
+              aes(x=BKT_per_capita, y = tuloköyhyys,label=maa),
+              hjust=0.5,vjust=-1,size=3.5) +
+  facet_wrap(~regime_fi, scales="free")
+
++
+     scale_x_log10() +
+    labs(x="GDP (current US$) (log scale)",
+         y="Life expectancy at birth (years)") +
+    theme_bw() +
+    scale_color_manual(values = cbPalette) +
+    theme(legend.position="none") +
+    coord_cartesian(xlim=c(0.65*min(dat.w$NY.GDP.PCAP.CD),
+                           1.55*max(dat.w$NY.GDP.PCAP.CD)),
+                   ylim=c(.99*min(dat.w$value),
+                          1.02*max(dat.w$value)))
+
 
 ```
 
