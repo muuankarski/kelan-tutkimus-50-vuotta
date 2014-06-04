@@ -214,8 +214,8 @@ body {
 }
 
 .reveal .slides section .slideContent li {
-    font-size: .8em;
-    line-height: 1em;
+    font-size: 1em;
+    line-height: 1.3em;
     font-weight: 500;
     padding: 0px;
     margin: 0px;
