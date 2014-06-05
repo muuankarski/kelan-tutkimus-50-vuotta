@@ -12,6 +12,7 @@ Kelan tutkimus 50 vuotta: Kestävä hyvinvointi -seminaaripäivä 5.6.2014</br>
 *yliopisto-opettaja* </br>
 [Sosiaalitieteden laitos, Turun yliopisto](https://www.utu.fi/fi/yksikot/soc/yksikot/sosiaalitieteet/Sivut/home.aspx) </br>
 
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons -käyttölupa" style="border-width:0" src="http://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
 
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(fig.width = 15, fig.height = 10, message = FALSE, warning = FALSE, dev='svg', cache=TRUE, echo=FALSE)
@@ -914,4 +915,5 @@ ggplot(dat_plot, aes(x=variable,y=value,
 
 <center>
 diat & lähdekoodi: [markuskainu.fi/blog/](http://markuskainu.fi/blog/)
+
 </center>
